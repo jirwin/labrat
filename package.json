@@ -1,5 +1,5 @@
 {
-  "name": "scientist",
+  "name": "labrat",
   "version": "0.0.0",
   "description": "Heavily inpsired from Github's Scientist, a tool to let you run two blocks of code and compare their output while capturing metrics about runtime performance and accuracy.",
   "main": "index.js",
