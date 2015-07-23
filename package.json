@@ -1,0 +1,24 @@
+{
+  "name": "scientist",
+  "version": "0.0.0",
+  "description": "Heavily inpsired from Github's Scientist, a tool to let you run two blocks of code and compare their output while capturing metrics about runtime performance and accuracy.",
+  "main": "index.js",
+  "scripts": {
+    "test": "./node_modules/tape/bin/tape test/test-*.js"
+  },
+  "keywords": [
+    "refactor",
+    "science",
+    "experiment",
+    "test"
+  ],
+  "author": "Justin Gallardo <justin.gallardo@gmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "tape": "^4.0.1"
+  },
+  "dependencies": {
+    "async": "^1.4.0",
+    "deasync": "^0.1.0"
+  }
+}
