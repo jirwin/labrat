@@ -1,6 +1,6 @@
 # labrat
 
-[![](https://img.shields.io/travis/jirwin/labrat.svg?style=flat)](https://travis-ci.org/jirwin/labrat) [![](https://img.shields.io/npm/v/labrat.svg?style=flat)](gi) [![](https://img.shields.io/npm/l/labrat.svg?style=flat)](https://npmjs.org/labrat)
+[![](https://img.shields.io/travis/jirwin/labrat.svg?style=flat)](https://travis-ci.org/jirwin/labrat) [![](https://img.shields.io/npm/v/labrat.svg?style=flat)](https://npmjs.org/labrat) [![](https://img.shields.io/npm/l/labrat.svg?style=flat)](https://npmjs.org/labrat)
 
 Labrat a tool to let you run two blocks of code and compare their output while capturing metrics about runtime
 performance. The hope is that this enables you to refactor code and gain confidence by testing it against a production
