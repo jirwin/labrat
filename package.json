@@ -8,9 +8,9 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/jirwin/grapr.git"
+    "url": "git://github.com/jirwin/labrat.git"
   },
-  "homepage": "https://github.com/jirwin/grapr",
+  "homepage": "https://github.com/jirwin/labrat",
   "keywords": [
     "refactor",
     "science",
