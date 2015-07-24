@@ -1,10 +1,11 @@
 {
   "name": "labrat",
   "version": "0.0.3",
-  "description": "Heavily inpsired from Github's Scientist, a tool to let you run two blocks of code and compare their output while capturing metrics about runtime performance and accuracy.",
+  "description": "Labrat a tool to let you run two blocks of code and compare their output while capturing metrics about runtime performance. The hope is that this enables you to refactor code and gain confidence by testing it against a production load. Heavily inpsired from Github's [Scientist](https://github.com/github/scientist).",
   "main": "index.js",
   "scripts": {
-    "test": "./node_modules/tape/bin/tape test/test-*.js"
+    "test": "./node_modules/tape/bin/tape test/test-*.js",
+    "lint": "./node_modules/jscs/bin/jscs */*.js"
   },
   "repository": {
     "type": "git",
@@ -20,6 +21,7 @@
   "author": "Justin Gallardo <justin.gallardo@gmail.com>",
   "license": "MIT",
   "devDependencies": {
+    "jscs": "^1.13.1",
     "tape": "^4.0.1"
   },
   "dependencies": {

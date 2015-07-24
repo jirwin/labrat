@@ -72,6 +72,7 @@ module.exports = function(name, control, candidate, options) {
       } else {
         cb.apply(null, ret.control.values);
       }
+
       options.publish(ret);
     });
 

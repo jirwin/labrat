@@ -19,8 +19,8 @@ test('async experiment', function(t) {
 
   run(3, function(err, results) {
     t.error(err, 'No error while running.');
-    t.ok(oneRan, "Function one ran.");
-    t.ok(twoRan, "Function two ran.");
+    t.ok(oneRan, 'Function one ran.');
+    t.ok(twoRan, 'Function two ran.');
     t.equal(results, 4, 'The resulting function returned 4.');
     t.end();
   });
@@ -45,8 +45,8 @@ test('async experiment with multiple return values', function(t) {
 
   run(3, function(err, results1, results2) {
     t.error(err, 'No error while running.');
-    t.ok(oneRan, "Function one ran.");
-    t.ok(twoRan, "Function two ran.");
+    t.ok(oneRan, 'Function one ran.');
+    t.ok(twoRan, 'Function two ran.');
     t.equal(results1, 3, 'The resulting function returned 3 as the first argument');
     t.equal(results2, 4, 'The resulting function returned 4 as the second argument.');
     t.end();
@@ -90,8 +90,8 @@ test('async experiment with publish', function(t) {
   run = labrat('test', one, two, options);
   run(3, function(err, results) {
     t.error(err, 'No error while running.');
-    t.ok(oneRan, "Function one ran.");
-    t.ok(twoRan, "Function two ran.");
+    t.ok(oneRan, 'Function one ran.');
+    t.ok(twoRan, 'Function two ran.');
     t.equal(results, 4, 'The resulting function returned 4.');
   });
 });
@@ -114,8 +114,8 @@ test('sync experiment', function(t) {
   var run = labrat('test', one, two, {sync: true});
 
   result = run(3);
-  t.ok(oneRan, "Function one ran.");
-  t.ok(twoRan, "Function two ran.");
+  t.ok(oneRan, 'Function one ran.');
+  t.ok(twoRan, 'Function two ran.');
   t.equal(result, 4, 'The resulting function returned 4.');
   t.end();
 });
@@ -153,7 +153,7 @@ test('sync experiment with publish', function(t) {
 
   run = labrat('test', one, two, options);
   result = run(3);
-  t.ok(oneRan, "Function one ran.");
-  t.ok(twoRan, "Function two ran.");
+  t.ok(oneRan, 'Function one ran.');
+  t.ok(twoRan, 'Function two ran.');
   t.equal(result, 4, 'The resulting function returned 4.');
 });
