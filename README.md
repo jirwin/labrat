@@ -1,5 +1,7 @@
 # labrat
 
+![](https://img.shields.io/travis/jirwin/labrat.svg?style=flat) ![](https://img.shields.io/npm/v/labrat.svg?style=flat) ![](https://img.shields.io/npm/l/labrat.svg?style=flat)
+
 Labrat a tool to let you run two blocks of code and compare their output while capturing metrics about runtime
 performance. The hope is that this enables you to refactor code and gain confidence by testing it against a production
 load.
@@ -10,6 +12,26 @@ Heavily inpsired from Github's [Scientist](https://github.com/github/scientist).
 `$ npm install labrat`
 
 ## Example
+```javascript
+var labrat = require('labrat');
+
+function oldCode(val, callback) {
+  setTimeout(function() {
+    callback(null, val);
+  }, 1000);
+}
+
+function newCode(val, callback) {
+  betterThanATimeout(val, callback);
+}
+
+run = labrat('better than a timeout', oldCode, newCode);
+
+run(3, function(err, results) {
+  console.log(results); // prints 3 after 1 second
+});
+
+### Usage
 Labrat works by returning a new function that runs your existing code(control) and new code(candidate) in parallel, and
 recording the returned values of each function along with the runtime duration of each function. The labrat function
 will always return the values from the control function ensuring that functionality doesn't change.
