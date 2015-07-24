@@ -20,7 +20,9 @@ module.exports = function(name, control, candidate, options) {
   return function() {
     var args, f1, f2, cb, ret, retSet;
 
-    ret = {};
+    ret = {
+      name: name
+    };
 
     args = Array.prototype.slice.call(arguments);
 

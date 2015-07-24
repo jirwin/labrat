@@ -73,10 +73,11 @@ test('async experiment with publish', function(t) {
     }, 2000);
   }
 
-  t.plan(13);
+  t.plan(14);
 
   options.publish = function(results) {
     t.ok(results, 'A results object was returned');
+    t.equal(results.name, 'test', 'The experiment name was properly set.');
     t.ok(results.control, 'A control observation was returned');
     t.ok(results.control.hasOwnProperty('duration'), 'The control observation has a duration');
     t.ok(results.control.duration > 5000, 'The control duration took at least 5 seconds');
@@ -137,12 +138,13 @@ test('sync experiment with publish', function(t) {
     return 2 + val;
   }
 
-  t.plan(10);
+  t.plan(11);
 
   options.sync = true;
   options.publish = function(results) {
     console.dir(results);
     t.ok(results, 'A results object was returned');
+    t.equal(results.name, 'test', 'The experiment name was properly set.');
     t.ok(results.control, 'A control observation was returned');
     t.ok(results.control.hasOwnProperty('duration'), 'The control observation has a duration');
     t.deepEqual(results.control.values, 4, 'The control observation has the expected results');
