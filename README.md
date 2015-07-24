@@ -8,10 +8,10 @@ load.
 
 Heavily inpsired from Github's [Scientist](https://github.com/github/scientist).
 
-## Install
+# Install
 `$ npm install labrat`
 
-## Example
+# Example
 ```javascript
 var labrat = require('labrat');
 
@@ -30,8 +30,9 @@ run = labrat('better than a timeout', oldCode, newCode);
 run(3, function(err, results) {
   console.log(results); // prints 3 after 1 second
 });
+```
 
-### Usage
+# Usage
 Labrat works by returning a new function that runs your existing code(control) and new code(candidate) in parallel, and
 recording the returned values of each function along with the runtime duration of each function. The labrat function
 will always return the values from the control function ensuring that functionality doesn't change.
@@ -106,21 +107,21 @@ run(3, function(err, results) {
 });
 ```
 
-### labrat(name, control, candidate[, options])
+# labrat(name, control, candidate[, options])
 The labrat function returns a new function that runs both the control and candidate and returns the value(s) from the
 `control`.
 
-#### name
+### name
 A unique name to track the experiment
 
-#### control
+### control
 The `control` function is your existing code that you are planning on refactoring. The results of `control` are always
 returned when you call the labrat function.
 
-#### candidate
+### candidate
 The `candidate` function is your new code that you'd like to compare against the `control`.
 
-#### options
+### options
 The `options` object is optional. It currently supports:
 * sync (defaults to false)
   * If true, labrat will treat this as a synchronous function
@@ -128,11 +129,11 @@ The `options` object is optional. It currently supports:
   * A function that receives a `results` object that contains experiment observations. Typically you'd want to emit
     these observations to something like [statsd](https://github.com/etsy/statsd).
    
-### Test and Lint
+# Test and Lint
 `$ npm test && npm run-script lint`
 
-### Contribute
-Submit pull requests against the master branch.
+# Contribute
+Submit pull requests against the master branch. Make sure tests and lint pass.
 
-### Maintainers
-@jirwin
+# Maintainers
+[@jirwin](https://github.com/jirwin)
