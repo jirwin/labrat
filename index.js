@@ -10,42 +10,74 @@ function _convertToAsync(func) {
   }
 };
 
-module.exports = function(name, legacy, shiny, options) {
+module.exports = function(name, control, candidate, options) {
   options = options || {};
+
+  if (!options.publish) {
+    options.publish = function() {};
+  }
 
   return function() {
     var args, f1, f2, cb, ret, retSet;
 
+    ret = {};
+
     args = Array.prototype.slice.call(arguments);
 
     if (options.sync) {
-      f1 = _convertToAsync(legacy);
-      f2 = _convertToAsync(shiny);
+      f1 = _convertToAsync(control);
+      f2 = _convertToAsync(candidate);
     } else {
-      f1 = legacy;
-      f2 = shiny;
+      f1 = control;
+      f2 = candidate;
       cb = args.pop();
     }
 
     async.auto({
-      legacy: function legacyFunc(callback) {
-        f1.apply(null, args.concat(callback));
+      control: function controlFunc(callback) {
+        var now = Date.now();
+        f1.apply(null, args.concat(function() {
+          var endTime = Date.now(),
+              args = Array.prototype.slice.call(arguments);
+
+          ret.control = {
+            values: args,
+            duration: endTime - now
+          };
+
+          callback();
+        }));
       },
-      shiny: function shinyFunc(callback) {
-        f2.apply(null, args.concat(callback));
+
+      candidate: function candidateFunc(callback) {
+        var now = Date.now();
+
+        f2.apply(null, args.concat(function() {
+          var endTime = Date.now(),
+              args = Array.prototype.slice.call(arguments);
+
+          ret.candidate = {
+            values: args,
+            duration: endTime - now
+          };
+
+          callback();
+        }));
       }
-    }, function(err, results) {
+    }, function() {
       if (options.sync) {
-        ret = results.legacy;
         retSet = true;
+        ret.control.values = ret.control.values.pop();
+        ret.candidate.values = ret.candidate.values.pop();
       } else {
-        cb(null, results.legacy);
+        cb.apply(null, ret.control.values);
       }
+      options.publish(ret);
     });
 
     if (options.sync) {
       deasync.loopWhile(function() { return !retSet; });
-      return ret;
+      return ret.control.values;
     }
   };
 };
