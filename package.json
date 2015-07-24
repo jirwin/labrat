@@ -1,6 +1,6 @@
 {
   "name": "labrat",
-  "version": "0.0.3",
+  "version": "0.1.0",
   "description": "Labrat a tool to let you run two blocks of code and compare their output while capturing metrics about runtime performance. The hope is that this enables you to refactor code and gain confidence by testing it against a production load. Heavily inpsired from Github's [Scientist](https://github.com/github/scientist).",
   "main": "index.js",
   "scripts": {
