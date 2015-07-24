@@ -6,6 +6,11 @@
   "scripts": {
     "test": "./node_modules/tape/bin/tape test/test-*.js"
   },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/jirwin/grapr.git"
+  },
+  "homepage": "https://github.com/jirwin/grapr",
   "keywords": [
     "refactor",
     "science",
