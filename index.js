@@ -17,7 +17,7 @@ function _convertToAsync(func) {
  * @param {String} name The name of the experiment.
  * @param {Function} control The control function.
  * @param {Function} candidate The candidate function.
- * @param {WritableStream} publishStream A Writable object stream to publish results to.
+ * @param {Writable} publishStream A Writable object stream to publish results to.
  * @param {Object} options An options object.
  * @returns {Function}
  */
@@ -90,12 +90,14 @@ module.exports = function(name, control, candidate, publishStream, options) {
 
       ret.mismatch = !deepEqual(ret.control.values, ret.candidate.values);
 
+      // If a publishStream is provided, write the observations
       if (publishStream) {
         publishStream.write(ret);
       }
     });
 
     if (options.sync) {
+      // Since this is a sync function, we need to wait for the result to return.
       deasync.loopWhile(function() { return !retSet; });
       return ret.control.values;
     }

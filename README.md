@@ -80,15 +80,10 @@ and the candidate. An observation includes the duration(in milliseconds), and th
 functions, this is an `Array` of arguments that were passed to the resulting callback. For synchronous functions, it is
 the value returned by each function.
 
-You can(and should) specify a `publish` function to accomplish this:
+You can(and should) specify a `publishStream`, which is a Writable object stream, to accomplish this:
 ```javascript
 var labrat = require('labrat');
-
-var options = {
-  publish: function(results) {
-    console.dir(results); // prints the experiment results
-  }
-};
+var through2 = require('through2');
 
 function oldCode(val, callback) {
   setTimeout(function() {
@@ -100,7 +95,12 @@ function newCode(val, callback) {
   betterThanATimeout(val, callback);
 }
 
-run = labrat('better than a timeout', oldCode, newCode);
+var publishStream = through2.obj(function(obj, enc, callback) {
+  console.log(obj.name, obj.id); // Print the name and id of the experiment.
+  callback();
+});
+
+run = labrat('better than a timeout', oldCode, newCode, publishStream);
 
 run(3, function(err, results) {
   console.log(results); // prints 3 after ~1 second has passed
