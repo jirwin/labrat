@@ -73,11 +73,12 @@ test('async experiment with publish', function(t) {
     }, 2000);
   }
 
-  t.plan(14);
+  t.plan(15);
 
   options.publish = function(results) {
     t.ok(results, 'A results object was returned');
     t.equal(results.name, 'test', 'The experiment name was properly set.');
+    t.ok(results.hasOwnProperty('id'), 'The experiment was assigned an id');
     t.ok(results.control, 'A control observation was returned');
     t.ok(results.control.hasOwnProperty('duration'), 'The control observation has a duration');
     t.ok(results.control.duration > 5000, 'The control duration took at least 5 seconds');
@@ -85,6 +86,41 @@ test('async experiment with publish', function(t) {
     t.ok(results.candidate, 'A candidate observation was returned');
     t.ok(results.candidate.hasOwnProperty('duration'), 'The candidate observation has a duration');
     t.ok(results.candidate.duration > 2000, 'The candidate duration took at least 2 seconds');
+    t.deepEqual(results.candidate.values, [null, 5], 'The candidate observation has the expected results');
+  };
+
+  run = labrat('test', one, two, options);
+  run(3, function(err, results) {
+    t.error(err, 'No error while running.');
+    t.ok(oneRan, 'Function one ran.');
+    t.ok(twoRan, 'Function two ran.');
+    t.equal(results, 4, 'The resulting function returned 4.');
+  });
+});
+
+test('results mismatch', function(t) {
+  var oneRan = false,
+    twoRan = false,
+    options = {},
+    run;
+
+  function one(val, callback) {
+    oneRan = true;
+    callback(null, val + 1);
+  }
+
+  function two(val, callback) {
+    twoRan = true;
+    callback(null, val + 2);
+  }
+
+  t.plan(9);
+
+  options.publish = function(results) {
+    t.equal(results.mismatch, true, 'The results have mismatched values as expected.');
+    t.ok(results.control, 'A control observation was returned');
+    t.deepEqual(results.control.values, [null, 4], 'The control observation has the expected results');
+    t.ok(results.candidate, 'A candidate observation was returned');
     t.deepEqual(results.candidate.values, [null, 5], 'The candidate observation has the expected results');
   };
 
@@ -138,13 +174,13 @@ test('sync experiment with publish', function(t) {
     return 2 + val;
   }
 
-  t.plan(11);
+  t.plan(12);
 
   options.sync = true;
   options.publish = function(results) {
-    console.dir(results);
     t.ok(results, 'A results object was returned');
     t.equal(results.name, 'test', 'The experiment name was properly set.');
+    t.ok(results.hasOwnProperty('id'), 'The experiment was assigned an id');
     t.ok(results.control, 'A control observation was returned');
     t.ok(results.control.hasOwnProperty('duration'), 'The control observation has a duration');
     t.deepEqual(results.control.values, 4, 'The control observation has the expected results');

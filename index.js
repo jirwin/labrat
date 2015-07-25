@@ -1,5 +1,7 @@
 var async = require('async');
 var deasync = require('deasync');
+var deepEqual = require('deep-equal');
+var uuid = require('node-uuid');
 
 
 function _convertToAsync(func) {
@@ -21,7 +23,8 @@ module.exports = function(name, control, candidate, options) {
     var args, f1, f2, cb, ret, retSet;
 
     ret = {
-      name: name
+      name: name,
+      id: uuid.v1()
     };
 
     args = Array.prototype.slice.call(arguments);
@@ -75,6 +78,7 @@ module.exports = function(name, control, candidate, options) {
         cb.apply(null, ret.control.values);
       }
 
+      ret.mismatch = !deepEqual(ret.control.values, ret.candidate.values);
       options.publish(ret);
     });
 
