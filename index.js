@@ -12,12 +12,22 @@ function _convertToAsync(func) {
   }
 };
 
-module.exports = function(name, control, candidate, options) {
-  options = options || {};
-
-  if (!options.publish) {
-    options.publish = function() {};
+/**
+ * Returns a labrat function.
+ * @param {String} name The name of the experiment.
+ * @param {Function} control The control function.
+ * @param {Function} candidate The candidate function.
+ * @param {WritableStream} publishStream A Writable object stream to publish results to.
+ * @param {Object} options An options object.
+ * @returns {Function}
+ */
+module.exports = function(name, control, candidate, publishStream, options) {
+  if (publishStream && !publishStream.writable && !publishStream._writeableState) {
+    options = publishStream;
+    publishStream = null;
   }
+
+  options = options || {};
 
   return function() {
     var args, f1, f2, cb, ret, retSet;
@@ -79,7 +89,10 @@ module.exports = function(name, control, candidate, options) {
       }
 
       ret.mismatch = !deepEqual(ret.control.values, ret.candidate.values);
-      options.publish(ret);
+
+      if (publishStream) {
+        publishStream.write(ret);
+      }
     });
 
     if (options.sync) {

@@ -107,7 +107,7 @@ run(3, function(err, results) {
 });
 ```
 
-# labrat(name, control, candidate[, options])
+# labrat(name, control, candidate[, publishStream][, options])
 The labrat function returns a new function that runs both the control and candidate and returns the value(s) from the
 `control`.
 
@@ -121,14 +121,38 @@ returned when you call the labrat function.
 ### candidate
 The `candidate` function is your new code that you'd like to compare against the `control`.
 
+### publishStream
+A `Writable` object stream to publish experiment observations to. Typically you'd want to emit these observations to
+something like [statsd](https://github.com/etsy/statsd).
+
+The following example will pretty print all of the experiment observations to stdout:
+```javascript
+var through2 = require('through2');
+var labrat = require('labrat');
+
+var publishStream = through2.obj(function(obj, enc, callback) {
+  callback(null, JSON.stringify(obj, null, 2));
+});
+publishStream.pipe(process.stdout);
+
+function oldCode(val) {
+  return val;
+}
+
+function newCode(val) {
+  return extraStuff(val);
+}
+
+run = labrat('extra stuff', oldCode, newCode, publishStream, {sync: true});
+console.log(run(3)); // prints 3
+```
+
 ### options
 The `options` object is optional. It currently supports:
 * sync (defaults to false)
   * If true, labrat will treat this as a synchronous function
-* publish
-  * A function that receives a `results` object that contains experiment observations. Typically you'd want to emit
-    these observations to something like [statsd](https://github.com/etsy/statsd).
-   
+
+
 # Test and Lint
 `$ npm test && npm run-script lint`
 

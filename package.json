@@ -22,7 +22,8 @@
   "license": "MIT",
   "devDependencies": {
     "jscs": "^1.13.1",
-    "tape": "^4.0.1"
+    "tape": "^4.0.1",
+    "through2": "^2.0.0"
   },
   "dependencies": {
     "async": "^1.4.0",
