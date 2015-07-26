@@ -1,14 +1,22 @@
 var async = require('async');
-var deasync = require('deasync');
 var deepEqual = require('deep-equal');
 var uuid = require('node-uuid');
 
+/**
+ * Takes an asynchronous function and reports the amount of time it takes to run, as well as values it returns.
+ * @param func The function to observe.
+ * @param args The arguments to call the function with.
+ * @returns {Function} The function to call.
+ */
+var observeFunction = function(func, args) {
+  return function(callback) {
+    var now = Date.now();
+    func.apply(null, args.concat(function() {
+      var endTime = Date.now(),
+        innerArgs = Array.prototype.slice.call(arguments);
 
-function _convertToAsync(func) {
-  return function() {
-    var args = Array.prototype.slice.call(arguments),
-        callback = args.pop();
-    callback(null, func.apply(null, args));
+      callback(null, {values: innerArgs, duration: endTime - now});
+    }));
   }
 };
 
@@ -30,77 +38,29 @@ module.exports = function(name, control, candidate, publishStream, options) {
   options = options || {};
 
   return function() {
-    var args, f1, f2, cb, ret, retSet;
-
-    ret = {
-      name: name,
-      id: uuid.v1()
-    };
+    var args, cb;
 
     args = Array.prototype.slice.call(arguments);
-
-    if (options.sync) {
-      f1 = _convertToAsync(control);
-      f2 = _convertToAsync(candidate);
-    } else {
-      f1 = control;
-      f2 = candidate;
-      cb = args.pop();
-    }
-
+    cb = args.pop();
     async.auto({
-      control: function controlFunc(callback) {
-        var now = Date.now();
-        f1.apply(null, args.concat(function() {
-          var endTime = Date.now(),
-              args = Array.prototype.slice.call(arguments);
+      control: observeFunction(control, args),
+      candidate: ['control', observeFunction(candidate, args)]
+    }, function(err, results) {
+      var observations = {
+        control: results.control,
+        candidate: results.candidate,
+        name: name,
+        id: uuid.v1(),
+        mismatch: !deepEqual(results.control.values, results.candidate.values)
+      };
 
-          ret.control = {
-            values: args,
-            duration: endTime - now
-          };
-
-          callback();
-        }));
-      },
-
-      candidate: function candidateFunc(callback) {
-        var now = Date.now();
-
-        f2.apply(null, args.concat(function() {
-          var endTime = Date.now(),
-              args = Array.prototype.slice.call(arguments);
-
-          ret.candidate = {
-            values: args,
-            duration: endTime - now
-          };
-
-          callback();
-        }));
-      }
-    }, function() {
-      if (options.sync) {
-        retSet = true;
-        ret.control.values = ret.control.values.pop();
-        ret.candidate.values = ret.candidate.values.pop();
-      } else {
-        cb.apply(null, ret.control.values);
-      }
-
-      ret.mismatch = !deepEqual(ret.control.values, ret.candidate.values);
-
-      // If a publishStream is provided, write the observations
+      // If a publishStream is provided, write the observations to it
       if (publishStream) {
-        publishStream.write(ret);
+        publishStream.write(observations);
       }
-    });
 
-    if (options.sync) {
-      // Since this is a sync function, we need to wait for the result to return.
-      deasync.loopWhile(function() { return !retSet; });
-      return ret.control.values;
-    }
+      cb.apply(null, observations.control.values);
+    });
   };
 };
 

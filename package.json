@@ -27,7 +27,6 @@
   },
   "dependencies": {
     "async": "^1.4.0",
-    "deasync": "^0.1.0",
     "deep-equal": "^1.0.0",
     "node-uuid": "^1.4.3"
   }
