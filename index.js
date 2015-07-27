@@ -44,15 +44,25 @@ module.exports = function(name, control, candidate, publishStream, options) {
     cb = args.pop();
     async.auto({
       control: observeFunction(control, args),
-      candidate: ['control', observeFunction(candidate, args)]
+      candidate: ['control', function(callback) {
+        if (options.enabled === false) {
+          callback(null, {});
+        } else {
+          observeFunction(candidate, args)(callback);
+        }
+      }]
     }, function(err, results) {
       var observations = {
         control: results.control,
         candidate: results.candidate,
         name: name,
         id: uuid.v1(),
-        mismatch: !deepEqual(results.control.values, results.candidate.values)
+        mismatch: false
       };
+
+      if (observations.control.hasOwnProperty('values') && observations.candidate.hasOwnProperty('values')) {
+        observations.mismatch = !deepEqual(observations.control.values, observations.candidate.values);
+      }
 
       // If a publishStream is provided, write the observations to it
       if (publishStream) {

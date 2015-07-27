@@ -47,3 +47,50 @@ test('experiment', function(t) {
     t.end();
   });
 });
+
+test('disabled experiment', function(t) {
+  var oneRan = false,
+    twoRan = false,
+    publishStream = through2.obj(),
+    options = {},
+    run;
+
+  function one(val, callback) {
+    oneRan = Date.now();
+    setTimeout(function() {
+      callback(null, val, 1 + val);
+    }, 100);
+  }
+
+  function two(val, callback) {
+    twoRan = Date.now();
+    setTimeout(function() {
+      callback(null, val, 2 + val);
+    }, 200);
+  }
+
+  publishStream.on('data', function(obj) {
+    t.ok(obj, 'A results object was returned');
+    t.equal(obj.name, 'test', 'The experiment name was properly set.');
+    t.ok(obj.hasOwnProperty('id'), 'The experiment was assigned an id');
+    t.ok(obj.control, 'A control observation was returned');
+    t.ok(obj.control.hasOwnProperty('duration'), 'The control observation has a duration');
+    t.ok(obj.control.duration >= 100, 'The control duration took at least 5 seconds');
+    t.deepEqual(obj.control.values, [null, 3, 4], 'The control observation has the expected results');
+    t.deepEqual(obj.candidate, {}, 'An empty candidate observation was returned.');
+    t.equal(obj.mismatch, false, 'The results have mismatched values as expected.');
+  });
+
+  options.enabled = false;
+
+  run = labrat('test', one, two, publishStream, options);
+
+  run(3, function(err, res1, res2) {
+    t.error(err, 'No error while running.');
+    t.ok(oneRan, 'Function one ran.');
+    t.notOk(twoRan, 'Function two did not run.');
+    t.equal(res1, 3, 'The resulting function returned 3 as its second argument.');
+    t.equal(res2, 4, 'The resulting function returned 4 as its third argument.');
+    t.end();
+  });
+});
