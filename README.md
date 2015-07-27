@@ -33,7 +33,7 @@ run(3, function(err, results) {
 ```
 
 # Usage
-Labrat works by returning a new function that runs your existing code(control) and new code(candidate) in parallel, and
+Labrat works by returning a new function that runs your existing code(control) and new code(candidate), and
 recording the returned values of each function along with the runtime duration of each function. The labrat function
 will always return the values from the control function ensuring that functionality doesn't change.
 
@@ -58,27 +58,10 @@ run(3, function(err, results) {
 });
 ```
 
-Labrat also works with synchronous functions by setting the `sync` option:
-```javascript
-var labrat = require('labrat');
-
-function oldCode(val) {
-  return val;
-}
-
-function newCode(val) {
-  return extraStuff(val);
-}
-
-run = labrat('extra stuff', oldCode, newCode, {sync: true});
-console.log(run(3)); // prints 3
-```
-
 The whole point of labrat is to run both code paths to measure the difference between the two. So it is important to
 look at the results! The results that are published include the name of the experiment, and observations for the control
-and the candidate. An observation includes the duration(in milliseconds), and the values returned. For asynchronous
-functions, this is an `Array` of arguments that were passed to the resulting callback. For synchronous functions, it is
-the value returned by each function.
+and the candidate. An observation includes the duration(in milliseconds), and the values returned. The values will be an
+`Array` of the arguments passed to the resulting continuation function.
 
 You can(and should) specify a `publishStream`, which is a Writable object stream, to accomplish this:
 ```javascript
@@ -95,10 +78,10 @@ function newCode(val, callback) {
   betterThanATimeout(val, callback);
 }
 
+// A transform stream that pipes JSON objects to stdout
 var publishStream = through2.obj(function(obj, enc, callback) {
-  console.log(obj.name, obj.id); // Print the name and id of the experiment.
-  callback();
-});
+  callback(null, JSON.stringify(obj, null, 2));
+}).pipe(process.stdout);
 
 run = labrat('better than a timeout', oldCode, newCode, publishStream);
 
@@ -107,50 +90,30 @@ run(3, function(err, results) {
 });
 ```
 
-# labrat(name, control, candidate[, publishStream][, options])
-The labrat function returns a new function that runs both the control and candidate and returns the value(s) from the
-`control`.
+## labrat(name, control, candidate[, publishStream][, options])
+The labrat function returns a new function that runs both the `control` and `candidate` and returns the value(s) from
+the `control`.
 
-### name
-A unique name to track the experiment
+* `name` String
+* `control` Function
+* `candidate` Function
+* `publishStream` Writable object stream (optional)
+* `options` Object (optional)
 
-### control
-The `control` function is your existing code that you are planning on refactoring. The results of `control` are always
-returned when you call the labrat function.
+`name` is a unique identifier for the experiment. The `control` function is your existing code that you are planning on
+refactoring. The results of `control` are always returned when you call the `labrat` function. The `candidate` function
+is your new code that you'd like to compare against the `control`.
 
-### candidate
-The `candidate` function is your new code that you'd like to compare against the `control`.
+Specify `publishStream` to receive the observations of each experiment. Typically you'd want to emit these observations
+to something like [statsd](https://github.com/etsy/statsd).
 
-### publishStream
-A `Writable` object stream to publish experiment observations to. Typically you'd want to emit these observations to
-something like [statsd](https://github.com/etsy/statsd).
-
-The following example will pretty print all of the experiment observations to stdout:
-```javascript
-var through2 = require('through2');
-var labrat = require('labrat');
-
-var publishStream = through2.obj(function(obj, enc, callback) {
-  callback(null, JSON.stringify(obj, null, 2));
-});
-publishStream.pipe(process.stdout);
-
-function oldCode(val) {
-  return val;
-}
-
-function newCode(val) {
-  return extraStuff(val);
-}
-
-run = labrat('extra stuff', oldCode, newCode, publishStream, {sync: true});
-console.log(run(3)); // prints 3
-```
-
-### options
-The `options` object is optional. It currently supports:
-* sync (defaults to false)
-  * If true, labrat will treat this as a synchronous function
+The `options` currently supports:
+* `enabled` (defaults to `true`) determines if the `candidate` function should be run. It can be a `function`, `boolean`,
+  or `number`.
+  * `function`: The function will be called, and its result's truthiness will determine if the `candidate`
+    function should be run or not.
+  * `boolean`: If `true`, the `candidate` function will run, else it will not.
+  * `number`: The value will be used as a percentage of time that the `candidate` function will be run.
 
 
 # Test and Lint
