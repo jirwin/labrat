@@ -28,11 +28,9 @@ test('experiment', function(t) {
     t.ok(obj.hasOwnProperty('id'), 'The experiment was assigned an id');
     t.ok(obj.control, 'A control observation was returned');
     t.ok(obj.control.hasOwnProperty('duration'), 'The control observation has a duration');
-    t.ok(obj.control.duration >= 100, 'The control duration took at least 100 msecs');
     t.deepEqual(obj.control.values, [null, 3, 4], 'The control observation has the expected results');
     t.ok(obj.candidate, 'A candidate observation was returned');
     t.ok(obj.candidate.hasOwnProperty('duration'), 'The candidate observation has a duration');
-    t.ok(obj.candidate.duration >= 200, 'The candidate duration took at least 200 msecs');
     t.deepEqual(obj.candidate.values, [null, 3, 5], 'The candidate observation has the expected results');
     t.equal(obj.mismatch, true, 'The results have mismatched values as expected.');
   });
@@ -75,7 +73,6 @@ test('disabled experiment', function(t) {
     t.ok(obj.hasOwnProperty('id'), 'The experiment was assigned an id');
     t.ok(obj.control, 'A control observation was returned');
     t.ok(obj.control.hasOwnProperty('duration'), 'The control observation has a duration');
-    t.ok(obj.control.duration >= 100, 'The control duration took at least 100 msecs');
     t.deepEqual(obj.control.values, [null, 3, 4], 'The control observation has the expected results');
     t.deepEqual(obj.candidate, {}, 'An empty candidate observation was returned.');
     t.equal(obj.mismatch, false, 'The results have mismatched values as expected.');
@@ -122,11 +119,9 @@ test('enabled experiment with function', function(t) {
     t.ok(obj.hasOwnProperty('id'), 'The experiment was assigned an id');
     t.ok(obj.control, 'A control observation was returned');
     t.ok(obj.control.hasOwnProperty('duration'), 'The control observation has a duration');
-    t.ok(obj.control.duration >= 100, 'The control duration took at least 100 msecs');
     t.deepEqual(obj.control.values, [null, 3, 4], 'The control observation has the expected results');
     t.ok(obj.candidate, 'A candidate observation was returned');
     t.ok(obj.candidate.hasOwnProperty('duration'), 'The candidate observation has a duration');
-    t.ok(obj.candidate.duration >= 200, 'The candidate duration took at least 200 msecs');
     t.deepEqual(obj.candidate.values, [null, 3, 5], 'The candidate observation has the expected results');
     t.equal(obj.mismatch, true, 'The results have mismatched values as expected.');
   });
@@ -175,11 +170,9 @@ test('enabled experiment with boolean', function(t) {
     t.ok(obj.hasOwnProperty('id'), 'The experiment was assigned an id');
     t.ok(obj.control, 'A control observation was returned');
     t.ok(obj.control.hasOwnProperty('duration'), 'The control observation has a duration');
-    t.ok(obj.control.duration >= 100, 'The control duration took at least 100 msecs');
     t.deepEqual(obj.control.values, [null, 3, 4], 'The control observation has the expected results');
     t.ok(obj.candidate, 'A candidate observation was returned');
     t.ok(obj.candidate.hasOwnProperty('duration'), 'The candidate observation has a duration');
-    t.ok(obj.candidate.duration >= 200, 'The candidate duration took at least 200 msecs');
     t.deepEqual(obj.candidate.values, [null, 3, 5], 'The candidate observation has the expected results');
     t.equal(obj.mismatch, true, 'The results have mismatched values as expected.');
   });
@@ -226,11 +219,9 @@ test('enabled experiment with percentage', function(t) {
     t.ok(obj.hasOwnProperty('id'), 'The experiment was assigned an id');
     t.ok(obj.control, 'A control observation was returned');
     t.ok(obj.control.hasOwnProperty('duration'), 'The control observation has a duration');
-    t.ok(obj.control.duration >= 100, 'The control duration took at least 100 msecs');
     t.deepEqual(obj.control.values, [null, 3, 4], 'The control observation has the expected results');
     t.ok(obj.candidate, 'A candidate observation was returned');
     t.ok(obj.candidate.hasOwnProperty('duration'), 'The candidate observation has a duration');
-    t.ok(obj.candidate.duration >= 200, 'The candidate duration took at least 200 msecs');
     t.deepEqual(obj.candidate.values, [null, 3, 5], 'The candidate observation has the expected results');
     t.equal(obj.mismatch, true, 'The results have mismatched values as expected.');
   });
@@ -277,7 +268,6 @@ test('disabled experiment with function', function(t) {
     t.ok(obj.hasOwnProperty('id'), 'The experiment was assigned an id');
     t.ok(obj.control, 'A control observation was returned');
     t.ok(obj.control.hasOwnProperty('duration'), 'The control observation has a duration');
-    t.ok(obj.control.duration >= 100, 'The control duration took at least 100 msecs');
     t.deepEqual(obj.control.values, [null, 3, 4], 'The control observation has the expected results');
     t.deepEqual(obj.candidate, {}, 'An empty candidate observation was returned.');
     t.equal(obj.mismatch, false, 'The results have mismatched values as expected.');
@@ -326,7 +316,6 @@ test('disabled experiment with percentage', function(t) {
     t.ok(obj.hasOwnProperty('id'), 'The experiment was assigned an id');
     t.ok(obj.control, 'A control observation was returned');
     t.ok(obj.control.hasOwnProperty('duration'), 'The control observation has a duration');
-    t.ok(obj.control.duration >= 100, 'The control duration took at least 100 msecs');
     t.deepEqual(obj.control.values, [null, 3, 4], 'The control observation has the expected results');
     t.deepEqual(obj.candidate, {}, 'An empty candidate observation was returned.');
     t.equal(obj.mismatch, false, 'The results have mismatched values as expected.');
